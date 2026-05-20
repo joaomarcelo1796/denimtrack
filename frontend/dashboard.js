@@ -6,7 +6,7 @@ if (!token) {
 
 async function carregarProcessos() {
     try {
-        const resposta = await fetch("http://localhost:3000/processos");
+        const resposta = await fetch("http://52.15.207.64:3000/processos");
         let processos = await resposta.json();
 
         const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
@@ -147,7 +147,7 @@ async function carregarProcessos() {
 // === 6. OPERAÇÃO: AVANÇAR ETAPA (+25%) ===
 async function avancarEtapa(id) {
     try {
-        const resposta = await fetch(`http://localhost:3000/processos/${id}`, { method: "PUT" });
+        const resposta = await fetch(`http://52.15.207.64:3000/processos/${id}`, { method: "PUT" });
         if (!resposta.ok) throw new Error("A requisição falhou no servidor.");
         carregarProcessos();
     } catch (erro) {
@@ -160,7 +160,7 @@ async function avancarEtapa(id) {
 async function excluirProcesso(id) {
     if (!confirm("Tem certeza de que deseja apagar permanentemente esta ordem?")) return;
     try {
-        const resposta = await fetch(`http://localhost:3000/processos/${id}`, { method: "DELETE" });
+        const resposta = await fetch(`http://52.15.207.64:3000/processos/${id}`, { method: "DELETE" });
         if (!resposta.ok) throw new Error("Erro interno ao deletar.");
         carregarProcessos();
     } catch (erro) {
@@ -175,7 +175,7 @@ async function editarProcesso(id, statusAtual) {
     if (!novoStatus || novoStatus.trim() === statusAtual) return;
 
     try {
-        const resposta = await fetch(`http://localhost:3000/processos/${id}/editar`, {
+        const resposta = await fetch(`http://52.15.207.64:3000/processos/${id}/editar`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: novoStatus.trim() })
