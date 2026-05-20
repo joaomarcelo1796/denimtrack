@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - DenimTrack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+            <div class="logo-sidebar">
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
+            <ul>
+                 <li onclick="window.location.href='dashboard.html'">Dashboard</li>
+                 <li id="menuProcessos" onclick="window.location.href='processos.html'">Processos</li>
+                 <li onclick="window.location.href='admin.html'" style="background: #1e293b;">Administração</li>
+                 <li onclick="logout()">Sair</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1>Painel do Administrador</h1>
+
+            <div class="processos" style="margin-bottom: 30px;">
+                <h2>Clientes Cadastrados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Nível</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaClientes">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="processos">
+                <h2>Gerenciamento Total de Processos</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Quantidade</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaTodosProcessos">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+    <script>
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

@@ -3,99 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processos - DenimTrack</title>
-
+    <title>Cadastrar Processo - DenimTrack</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="dashboard">
-
         <aside class="sidebar">
-
             <div class="logo-sidebar">
-
-              <img
-                  src="img/logo.png"
-                  alt="DenimTrack"
-              >
-
-          </div>
-
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
             <ul>
-                <li onclick="window.location.href='dashboard.html'">
-                    Dashboard
-               </li>
-
-               <li onclick="window.location.href='processos.html'">
-                   Processos
-               </li>
-
-               <li onclick="logout()">
-                   Sair
-               </li>
+                 <li onclick="window.location.href='dashboard.html'">Dashboard</li>
+                 <li id="menuProcessos" onclick="window.location.href='processos.html'" style="background: #1e293b;">Processos</li>
+                 <li id="menuAdmin" onclick="window.location.href='admin.html'" style="display: none;">Análises / Administração</li>
+                 <li onclick="logout()">Sair</li>
             </ul>
-
         </aside>
 
         <main class="content">
+            <h1>Novo Registro de Serviço</h1>
+            
+            <div class="form-container" style="background: #fff; padding: 25px; border-radius: 8px; max-width: 600px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <form id="processoForm">
+                    <label for="cliente">Nome do Cliente:</label>
+                    <input type="text" id="cliente" placeholder="Digite o nome igual ao cadastro do cliente" required>
 
-            <h1>Novo Processo</h1>
+                    <label for="quantidade">Quantidade de Peças:</label>
+                    <input type="number" id="quantidade" placeholder="Ex: 150" required>
 
-            <form id="processoForm" class="form-processo">
+                    <label for="tipo_lavagem">Tipo de Lavagem / Serviço:</label>
+                    <input type="text" id="tipo_lavagem" placeholder="Ex: Amaciado / Desbotado" required>
 
-                <input
-                    type="text"
-                    id="cliente"
-                    placeholder="Nome do Cliente"
-                    required
-                >
+                    <label for="prazo_entrega">Prazo de Entrega:</label>
+                    <input type="date" id="prazo_entrega" required>
 
-                <input
-                    type="number"
-                    id="quantidade"
-                    placeholder="Quantidade de peças"
-                    required
-                >
+                    <label for="produtoInput" style="margin-top: 15px; display: block;">Vincular Produtos ao Serviço:</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="produtoInput" placeholder="Ex: Calça Slim Soft Touch Black">
+                        <button type="button" id="btnAdicionarProduto" style="background: #10b981; color: white; border: none; border-radius: 6px; padding: 0 20px; font-weight: bold; cursor: pointer; font-size: 18px;">+</button>
+                    </div>
+                    
+                    <div id="listaProdutosAcumulados" style="margin-bottom: 20px; font-size: 13px; color: #475569; font-weight: 600; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                        Produtos selecionados: Nenhum
+                    </div>
 
-                <input
-                    type="text"
-                    id="tipo_lavagem"
-                    placeholder="Tipo de lavagem"
-                    required
-                >
-
-                <input
-                    type="date"
-                    id="prazo_entrega"
-                    required
-                >
-
-                <button type="submit">
-                    Cadastrar Processo
-                </button>
-
-            </form>
-
-            <p id="mensagem"></p>
-
+                    <button type="submit" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Salvar e Gerar Ordem</button>
+                </form>
+                <p id="mensagem" style="margin-top: 15px; font-weight: bold; text-align: center;"></p>
+            </div>
         </main>
-
     </div>
 
     <script src="processos.js"></script>
-
-<script>
-
-function logout() {
-
-    localStorage.removeItem("token");
-
-    window.location.href = "login.html";
-
-}
-
-</script>
-
+    <script>
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>

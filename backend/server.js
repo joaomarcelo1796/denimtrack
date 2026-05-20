@@ -2,23 +2,29 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./database");
 
-const authRoutes = require("./routes/authRoutes");
-const processosRoutes = require("./routes/processosRoutes");
-
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-app.use("/auth", authRoutes);
-app.use("/processos", processosRoutes);
+// Importação das rotas modulares
+const processosRoutes = require("./routes/processosRoutes");
+const authRoutes = require("./routes/authRoutes");
 
-app.get("/", (req, res) => {
-    res.send("Servidor DenimTrack funcionando!");
+// Atribuição dos prefixos de rotas
+app.use("/processos", processosRoutes);
+app.use("/auth", authRoutes);
+
+// Rota global do Administrador: Listar utilizadores cadastrados
+app.get("/usuarios", (req, res) => {
+    db.all(`SELECT id, nome, email, nivel FROM usuarios`, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ erro: "Erro ao buscar a lista de usuários." });
+        }
+        res.json(rows);
+    });
 });
 
 const PORT = 3000;
-
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando perfeitamente na porta ${PORT}`);
 });

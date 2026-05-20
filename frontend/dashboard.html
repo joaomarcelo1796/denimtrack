@@ -3,115 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard DenimTrack</title>
-
+    <title>Dashboard - DenimTrack</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="dashboard">
-
         <aside class="sidebar">
-
-    <div class="logo-sidebar">
-
-        <img
-            src="img/logo.png"
-            alt="DenimTrack"
-        >
-
-    </div>
-
+            <div class="logo-sidebar">
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
             <ul>
-
-                 <li onclick="window.location.href='dashboard.html'">
+                 <li onclick="window.location.href='dashboard.html'" style="background: #1e293b;">
                      Dashboard
                  </li>
 
-                 <li onclick="window.location.href='processos.html'">
+                 <li id="menuProcessos" onclick="window.location.href='processos.html'">
                      Processos
+                 </li>
+                 
+                 <li id="menuAdmin" onclick="window.location.href='admin.html'" style="display: none;">
+                     Administração
                  </li>
 
                  <li onclick="logout()">
                      Sair
                  </li>
-
             </ul>
-
         </aside>
 
         <main class="content">
+            <h1>Painel de Acompanhamento</h1>
 
-            <h1>Dashboard</h1>
-
-                <div class="cards">
-
-                   <div class="card">
-                      <h3>Processos Ativos</h3>
-                      <p id="ativos">0</p>
-                  </div>
-
-                  <div class="card">
-                     <h3>Concluídos</h3>
-                     <p id="concluidos">0</p>
-                 </div>
-
-                 <div class="card">
-                    <h3>Total</h3>
+            <div class="cards">
+                <div class="card">
+                    <h3>Total de Serviços</h3>
                     <p id="total">0</p>
-                 </div>
-
+                </div>
+                <div class="card">
+                    <h3>Concluídos</h3>
+                    <p id="concluidos" style="color: #10b981;">0</p>
+                </div>
+                <div class="card">
+                    <h3>Em Andamento</h3>
+                    <p id="ativos" style="color: #2563eb;">0</p>
+                </div>
             </div>
-            
-            <div class="alertas">
 
-               <h2>Alertas</h2>
-
-               <div id="listaAlertas">
-
-               </div>
-
+            <div class="alertas-section">
+                <h2>Alertas de Produção</h2>
+                <div id="listaAlertas">
+                    </div>
             </div>
 
             <div class="processos">
-
-                <h2>Últimos Processos</h2>
-
+                <h2>Últimas Atualizações</h2>
                 <table>
-
                     <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Status</th>
-                            <th>Progresso</th>
-                        </tr>
-                    </thead>
-
+                        </thead>
                     <tbody id="tabelaProcessos">
-
-                    </tbody>
-
+                        </tbody>
                 </table>
-
             </div>
-
         </main>
-
     </div>
 
- <script src="dashboard.js"></script>
+    <script src="dashboard.js"></script>
 
- <script>
-
-function logout() {
-
-    localStorage.removeItem("token");
-
-    window.location.href = "login.html";
-
-}
-
-</script>
-
+    <script>
+        // Função de Sair (Limpa os dados de login)
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>

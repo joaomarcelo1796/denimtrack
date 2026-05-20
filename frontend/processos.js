@@ -1,77 +1,92 @@
+// === 1. VERIFICAÇÃO DE AUTENTICAÇÃO ===
 const token = localStorage.getItem("token");
 
 if (!token) {
-
     window.location.href = "login.html";
-
 }
 
-const nivel = localStorage.getItem("nivel");
+const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
 
-if (
-    nivel !== "admin" &&
-    nivel !== "funcionario"
-) {
-
-    alert("Acesso negado!");
-
+// Impede clientes de acessar esta tela de entrada de dados
+if (nivelUsuario !== "admin" && nivelUsuario !== "funcionario") {
+    alert("Acesso negado! Redirecionando para o painel de acompanhamento.");
     window.location.href = "dashboard.html";
-
 }
 
-console.log("JS funcionando");
+// === 2. GERENCIAMENTO DE EXIBIÇÃO DO MENU ADMIN ===
+const menuAdmin = document.getElementById("menuAdmin");
+if (menuAdmin) {
+    menuAdmin.style.display = nivelUsuario === "admin" ? "block" : "none";
+}
 
+// === 3. LOGICA INTERATIVA DE ADICIONAR PRODUTOS NO ARRAY ===
+let produtosArray = [];
+const btnAddProduto = document.getElementById("btnAdicionarProduto");
+const produtoInput = document.getElementById("produtoInput");
+const listaVisual = document.getElementById("listaProdutosAcumulados");
+
+if (btnAddProduto && produtoInput) {
+    btnAddProduto.addEventListener("click", () => {
+        const produtoTexto = produtoInput.value.trim();
+        if (produtoTexto !== "") {
+            produtosArray.push(produtoTexto);
+            // Atualiza a listagem na tela separando por vírgula
+            listaVisual.innerText = "Produtos selecionados: " + produtosArray.join(", ");
+            produtoInput.value = ""; 
+            produtoInput.focus();
+        }
+    });
+}
+
+// === 4. PROCESSAMENTO E ENVIO DO FORMULÁRIO ===
 const form = document.getElementById("processoForm");
 
-console.log(form);
+if (form) {
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-form.addEventListener("submit", async (e) => {
+        const cliente = document.getElementById("cliente").value;
+        const quantidade = document.getElementById("quantidade").value;
+        const tipo_lavagem = document.getElementById("tipo_lavagem").value;
+        const prazo_entrega = document.getElementById("prazo_entrega").value;
+        const mensagem = document.getElementById("mensagem");
 
-    e.preventDefault();
+        // Formata o array acumulado para string limpa ou define valor padrão
+        const produtosString = produtosArray.length > 0 ? produtosArray.join(", ") : "Nenhum detalhe de produto adicionado.";
 
-    console.log("Form enviado");
+        try {
+            const resposta = await fetch("http://localhost:3000/processos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cliente,
+                    quantidade,
+                    tipo_lavagem,
+                    prazo_entrega,
+                    produtos: produtosString
+                })
+            });
 
-    const cliente = document.getElementById("cliente").value;
-    const quantidade = document.getElementById("quantidade").value;
-    const tipo_lavagem = document.getElementById("tipo_lavagem").value;
-    const prazo_entrega = document.getElementById("prazo_entrega").value;
+            const dados = await resposta.json();
 
-    console.log(cliente);
-
-    const resposta = await fetch(
-        "http://localhost:3000/processos",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                cliente,
-                quantidade,
-                tipo_lavagem,
-                prazo_entrega
-            })
+            if (resposta.ok) {
+                mensagem.style.color = "green";
+                mensagem.innerText = `Sucesso! Serviço registrado sob a chave: ${dados.chave_servico}`;
+                
+                // Reseta a interface para uma nova inserção
+                form.reset();
+                produtosArray = [];
+                listaVisual.innerText = "Produtos selecionados: Nenhum";
+            } else {
+                mensagem.style.color = "#ef4444";
+                mensagem.innerText = dados.erro || "Falha ao registrar a ordem.";
+            }
+        } catch (erro) {
+            console.error("Erro operacional:", erro);
+            mensagem.style.color = "#ef4444";
+            mensagem.innerText = "Servidor offline ou inacessível no momento.";
         }
-    );
-
-    const dados = await resposta.json();
-
-    console.log(dados);
-
-    const mensagem = document.getElementById("mensagem");
-
-    if (resposta.ok) {
-
-        mensagem.innerText = "Processo cadastrado com sucesso!";
-
-        form.reset();
-
-    } else {
-
-        mensagem.innerText = dados.erro;
-
-    }
-
-});
+    });
+}

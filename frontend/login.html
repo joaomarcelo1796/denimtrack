@@ -3,83 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DenimTrack Login</title>
-
+    <title>DenimTrack - Autenticação</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="login-container">
 
-    <div class="login-box">
-
-<div class="logo-area">
-
-    <img
-        src="img/logo.png"
-        alt="DenimTrack"
-    >
-
-</div>
-
+        <div class="login-box" id="telaLogin">
+            <div class="logo-area">
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
+            
             <form id="loginForm">
-
-                <input
-                    type="text"
-                    id="nome"
-                    placeholder="Nome"
-                >
-
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="E-mail"
-                    required
-                >
-
-                <input
-                    type="password"
-                    id="senha"
-                    placeholder="Senha"
-                    required
-                >
-
-                <select id="nivel">
-
-                      <option value="funcionario">
-                           Funcionário
-                       </option>
-
-                       <option value="supervisor">
-                           Supervisor
-                       </option>
-
-                       <option value="admin">
-                           Administrador
-                       </option>
-
-                </select>
-
-                <button type="submit">
-                    Entrar
+                <input type="email" id="email" placeholder="E-mail Corporativo ou Cliente" required>
+                <input type="password" id="senha" placeholder="Palavra-passe" required>
+                
+                <button type="submit">Iniciar Sessão</button>
+                <button type="button" id="btnIrCadastro" style="background: #475569; margin-bottom: 12px;">Criar uma Conta</button>
+                
+                <button type="button" onclick="window.location.href='rastreio.html'" style="background: #10b981; font-weight: bold;">
+                    Rastrear Pedido sem Conta 🔍
                 </button>
-
-                <button
-                    type="button"
-                    id="btnCadastro"
-                >
-                    Cadastrar
-                </button>
-
             </form>
+            <p id="mensagemLogin" style="margin-top: 15px; font-weight: bold; text-align: center;"></p>
+        </div>
 
-            <p id="mensagem"></p>
-
+        <div class="login-box" id="telaCadastro" style="display: none;">
+            <div class="logo-area">
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
+            
+            <form id="cadastroForm">
+                <input type="text" id="nomeCad" placeholder="Nome Completo" required>
+                <input type="email" id="emailCad" placeholder="Endereço de E-mail" required>
+                <input type="password" id="senhaCad" placeholder="Defina a Palavra-passe" required>
+                
+                <select id="nivelCad">
+                    <option value="cliente">Cliente </option>
+                    <option value="funcionario">Funcionário </option>
+                    <option value="admin">Administrador </option>
+                </select>
+                
+                <button type="submit">Finalizar Registo</button>
+                <button type="button" id="btnVoltarLogin" style="background: #475569;">Voltar ao Login</button>
+            </form>
+            <p id="mensagemCadastro" style="margin-top: 15px; font-weight: bold; text-align: center;"></p>
         </div>
 
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>

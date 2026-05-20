@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreamento - DenimTrack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-box" style="max-width: 450px;">
+            <div class="logo-area">
+                <img src="img/logo.png" alt="DenimTrack">
+            </div>
+            
+            <h2 style="text-align: center; color: #73839c; margin-bottom: 20px;">Acompanhe seu Pedido</h2>
+            <p style="text-align: center; font-size: 14px; color: #64748b; margin-bottom: 20px;">Digite o código fornecido no momento do atendimento.</p>
+
+            <input type="text" id="codigoRastreio" placeholder="Ex: ABC-A2C3" style="text-transform: uppercase; font-weight: bold; text-align: center; font-size: 18px;">
+            
+            <button onclick="buscarRastreio()" style="background: #2563eb; margin-bottom: 10px;">Buscar Serviço</button>
+            <button onclick="window.location.href='login.html'" style="background: #cbd5e1; color: #475569;">Voltar ao Login</button>
+
+            <div id="resultadoRastreio" style="display: none; margin-top: 25px; text-align: left;">
+                </div>
+        </div>
+    </div>
+
+    <script src="rastreio.js"></script>
+
+</body>
+</html>
