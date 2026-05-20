@@ -17,7 +17,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const senha = document.getElementById("senha").value;
     const mensagem = document.getElementById("mensagemLogin");
 
-    const resposta = await fetch("http://localhost:3000/auth/login", {
+    const resposta = await fetch("http://52.15.207.64:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha })
@@ -49,7 +49,7 @@ document.getElementById("cadastroForm").addEventListener("submit", async (e) => 
     const nivel = document.getElementById("nivelCad").value;
     const mensagem = document.getElementById("mensagemCadastro");
 
-    const resposta = await fetch("http://localhost:3000/auth/register", {
+    const resposta = await fetch("http://52.15.207.64:3000/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nome, email, senha, nivel })
