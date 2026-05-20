@@ -55,7 +55,7 @@ if (form) {
         const produtosString = produtosArray.length > 0 ? produtosArray.join(", ") : "Nenhum detalhe de produto adicionado.";
 
         try {
-            const resposta = await fetch("http://localhost:3000/processos", {
+            const resposta = await fetch("http://52.15.207.64:3000/processos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
