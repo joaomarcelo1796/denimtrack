@@ -63,6 +63,15 @@ input {
     outline: none;
 }
 
+/* === CORREÇÃO DO CAMPO DE DATA NO TELEMÓVEL === */
+input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 45px;
+    background-color: #334155; /* Mantém a cor escura do seu layout */
+    color: white;
+}
+
 button {
 
     padding: 12px 20px;
@@ -408,9 +417,9 @@ select {
         margin-bottom: 20px;
     }
 
-    /* Ajuste dos Cartões de Métricas */
+    /* === Ajuste dos Cartões de Métricas CORRIGIDO === */
     .cards {
-        grid-template-columns: 1fr; /* Um cartão por linha */
+        flex-direction: column; /* Faz os cartões ficarem um embaixo do outro no celular */
         gap: 15px;
         margin-bottom: 25px;
     }
@@ -453,5 +462,3 @@ select {
         padding: 0;
     }
 }
-
-me de o codigo pronto
