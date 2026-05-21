@@ -354,3 +354,102 @@ select {
     max-width: 100%;
 
 }
+
+/* === 6. RESPONSIVIDADE (TABLETS E SMARTPHONES) === */
+@media (max-width: 768px) {
+    
+    /* Empilha o menu em cima do conteúdo */
+    .dashboard {
+        flex-direction: column;
+    }
+
+    /* Ajusta a barra lateral para ocupar a largura total no topo */
+    .sidebar {
+        width: 100%;
+        padding: 15px 0 0 0;
+    }
+
+    .logo-sidebar {
+        padding-bottom: 10px;
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+    .logo-sidebar img {
+        max-width: 120px;
+    }
+
+    /* Transforma a lista vertical num menu horizontal com scroll (deslizar o dedo) */
+    .sidebar ul {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        background-color: #1e293b;
+        padding: 0;
+    }
+
+    .sidebar ul::-webkit-scrollbar {
+        display: none; /* Esconde a barra de scroll feia no mobile */
+    }
+
+    .sidebar ul li {
+        padding: 12px 20px;
+        font-size: 14px;
+        border-right: 1px solid #334155;
+    }
+
+    /* Reduz os respiros para aproveitar o ecrã do telemóvel */
+    .content {
+        padding: 20px 15px;
+    }
+
+    .content h1 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    /* Ajuste dos Cartões de Métricas */
+    .cards {
+        grid-template-columns: 1fr; /* Um cartão por linha */
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    /* === PROTEÇÃO DAS TABELAS === */
+    /* Permite que o utilizador arraste a tabela para o lado sem quebrar o site */
+    .processos {
+        padding: 15px;
+        overflow-x: auto; 
+    }
+
+    table {
+        min-width: 600px; /* Força um tamanho mínimo para não esmagar o texto */
+    }
+
+    th, td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    /* Ajustes nos Formulários (Login / Cadastro / Rastreio) */
+    .login-box {
+        padding: 30px 20px;
+    }
+    
+    .form-container {
+        padding: 15px !important;
+    }
+    
+    #produtoInput {
+        width: 70%;
+    }
+    
+    #btnAdicionarProduto {
+        width: 30%;
+        padding: 0;
+    }
+}
