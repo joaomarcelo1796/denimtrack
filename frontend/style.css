@@ -73,7 +73,6 @@ input[type="date"] {
 }
 
 button {
-
     padding: 12px 20px;
 
     border: none;
@@ -91,16 +90,10 @@ button {
     margin-top: 10px;
 
     transition: 0.3s;
-
 }
 
 button:hover {
-
     opacity: 0.9;
-
-}
-
-button:hover {
     background: #2563eb;
 }
 
@@ -112,8 +105,12 @@ button:hover {
 }
 
 .sidebar {
+    /* TRAVA DE LARGURA PARA NÃO SER ESMAGADA */
     width: 260px;
-
+    min-width: 260px;
+    max-width: 260px;
+    flex-shrink: 0; 
+    
     background: #0f172a;
 
     color: white;
@@ -372,9 +369,11 @@ select {
         flex-direction: column;
     }
 
-    /* Ajusta a barra lateral para ocupar a largura total no topo */
+    /* Ajusta a barra lateral para ocupar a largura total no topo DESTRAVANDO A REGRA FIXA */
     .sidebar {
         width: 100%;
+        min-width: 100%;
+        max-width: 100%;
         padding: 15px 0 0 0;
     }
 
