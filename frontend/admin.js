@@ -10,7 +10,7 @@ if (!token || nivelUsuario !== "admin") {
 async function carregarPainelAdmin() {
     try {
         // 1. Carregar Clientes (Exige criação da rota GET /usuarios no back-end)
-        const resUsuarios = await fetch("http://52.15.207.64:3000/usuarios");
+        const resUsuarios = await fetch("http://denimtrack.com.br:3000/usuarios");
         if (resUsuarios.ok) {
             const usuarios = await resUsuarios.json();
             const tabelaClientes = document.getElementById("tabelaClientes");
@@ -28,7 +28,7 @@ async function carregarPainelAdmin() {
         }
 
         // 2. Carregar Todos os Processos
-        const resProcessos = await fetch("http://52.15.207.64:3000/processos");
+        const resProcessos = await fetch("http://denimtrack.com.br:3000/processos");
         if (resProcessos.ok) {
             const processos = await resProcessos.json();
             const tabelaProcessos = document.getElementById("tabelaTodosProcessos");

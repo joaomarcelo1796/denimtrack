@@ -16,7 +16,7 @@ async function buscarRastreio() {
     resultadoDiv.innerHTML = `<p style="text-align: center; color: #64748b;">Buscando informações...</p>`;
 
     try {
-        const resposta = await fetch(`http://52.15.207.64:3000/processos/rastreio/${codigo}`);
+        const resposta = await fetch(`http://denimtrack.com.br:3000/processos/rastreio/${codigo}`);
         const dados = await resposta.json();
 
         if (resposta.ok) {
