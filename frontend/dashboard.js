@@ -1,27 +1,27 @@
-
-// 1. Pega os dados do usuário, limpando espaços invisíveis e forçando minúsculo
-const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
-const nomeUsuario = localStorage.getItem("nome") ? localStorage.getItem("nome").trim().toLowerCase() : "";
-
-// 2. O "Espião" para termos 100% de certeza no Console (F12)
-console.log(`👤 Usuário logado: ${nomeUsuario} | 🔑 Nível de Acesso: [${nivelUsuario}]`);
+// dashboard.js - Código Blindado (Sem conflitos com auth.js)
 
 async function carregarProcessos() {
     try {
+        // As variáveis vieram para DENTRO da função. Zero chance de colisão!
+        const nivelLocal = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
+        const nomeLocal = localStorage.getItem("nome") ? localStorage.getItem("nome").trim().toLowerCase() : "";
+        
+        console.log(`👤 Usuário logado: ${nomeLocal} | 🔑 Nível de Acesso: [${nivelLocal}]`);
+
         const resposta = await fetch("https://denimtrack.com.br/api/processos");
         let processos = await resposta.json();
 
         // === FILTRO SELETIVO DE PRIVACIDADE PARA CLIENTE ===
-        if (nivelUsuario === "cliente") {
+        if (nivelLocal === "cliente") {
             processos = processos.filter(
-                p => p.cliente.trim().toLowerCase() === nomeUsuario
+                p => p.cliente.trim().toLowerCase() === nomeLocal
             );
         }
 
         // === DINÂMICA DE VISIBILIDADE DAS ABAS DA SIDEBAR ===
         document.querySelectorAll(".sidebar ul li").forEach(li => {
             const textoItem = li.textContent.trim();
-            if (textoItem.includes("Processos") && nivelUsuario === "cliente") {
+            if (textoItem.includes("Processos") && nivelLocal === "cliente") {
                 li.style.display = "none";
             }
         });
@@ -29,7 +29,7 @@ async function carregarProcessos() {
         // === CONTROLE DO MENU ADMIN ===
         const menuAdmin = document.getElementById("menuAdmin");
         if (menuAdmin) {
-            menuAdmin.style.display = (nivelUsuario === "admin") ? "block" : "none";
+            menuAdmin.style.display = (nivelLocal === "admin") ? "block" : "none";
         }
 
         // === PROCESSAMENTO E EXIBIÇÃO DE MÉTRICAS ===
@@ -37,7 +37,6 @@ async function carregarProcessos() {
         const concluidos = processos.filter(p => p.status === "Concluído").length;
         const ativos = total - concluidos;
 
-        // Usa 'if' para evitar erros no console caso esses IDs não existam no HTML
         if (document.getElementById("total")) document.getElementById("total").innerText = total;
         if (document.getElementById("concluidos")) document.getElementById("concluidos").innerText = concluidos;
         if (document.getElementById("ativos")) document.getElementById("ativos").innerText = ativos;
@@ -51,7 +50,7 @@ async function carregarProcessos() {
                 if (processo.etapa_atual === 3) {
                     listaAlertas.innerHTML += `
                         <div class="alerta alerta-warning">
-                            ⚠ A ordem de serviço ${identificador} está na última etapa de processamento.
+                            ⚠️ A ordem de serviço ${identificador} está na última etapa de processamento.
                         </div>
                     `;
                 }
@@ -69,11 +68,11 @@ async function carregarProcessos() {
         const tabela = document.getElementById("tabelaProcessos");
         const thead = document.querySelector(".processos table thead");
         
-        if (!tabela || !thead) return; // Se a página não tiver tabela, ele para a função aqui com segurança
+        if (!tabela || !thead) return;
         
         tabela.innerHTML = "";
 
-        if (nivelUsuario === "cliente") {
+        if (nivelLocal === "cliente") {
             thead.innerHTML = `
                 <tr>
                     <th style="text-align: left; padding-left: 15px;">Acompanhamento de Ordens de Serviço</th>
@@ -96,7 +95,7 @@ async function carregarProcessos() {
             const codServico = processo.chave_servico || "Pendente";
             const itensString = processo.produtos || "Nenhum detalhe técnico anexado.";
 
-            if (nivelUsuario === "cliente") {
+            if (nivelLocal === "cliente") {
                 tabela.innerHTML += `
                     <tr>
                         <td style="text-align: left; padding: 15px; line-height: 1.8;">
@@ -110,85 +109,7 @@ async function carregarProcessos() {
                     </tr>
                 `;
             } else {
-                // LÓGICA DE BOTÕES: ADMIN VS FUNCIONÁRIO
                 let botoesAcao = "";
                 
-                if (nivelUsuario === "admin") {
-                    botoesAcao = `
-                        <button onclick="avancarEtapa(${processo.id})" style="margin-right: 5px; cursor: pointer;">Avançar</button>
-                        <button onclick="editarProcesso(${processo.id}, '${processo.status}')" style="background-color: #f59e0b; margin-right: 5px; cursor: pointer;">Editar</button>
-                        <button onclick="excluirProcesso(${processo.id})" style="background-color: #ef4444; cursor: pointer;">Excluir</button>
-                    `;
-                } else {
-                    botoesAcao = `
-                        <button onclick="avancarEtapa(${processo.id})" style="cursor: pointer;">Avançar Etapa</button>
-                    `;
-                }
-
-                tabela.innerHTML += `
-                    <tr>
-                        <td><strong>${processo.cliente}</strong></td>
-                        <td><span style="color: #475569; font-weight: 700;">${codServico}</span></td>
-                        <td><span style="font-size: 13px; color: #64748b; font-style: italic;">${itensString}</span></td>
-                        <td>
-                            <div class="barra-container">
-                                <div class="barra-progresso" style="width: ${progressoPorcentagem}%"></div>
-                            </div>
-                            <span style="font-size: 12px; font-weight: bold;">${processo.status} (${progressoPorcentagem}%)</span>
-                        </td>
-                        <td>${botoesAcao}</td>
-                    </tr>
-                `;
-            }
-        });
-
-    } catch (erro) {
-        console.error("Erro crítico na carga de dados:", erro);
-    }
-}
-
-// === OPERAÇÕES LIGADAS AO OBJETO WINDOW (EVITA BUGS DE RENDERIZAÇÃO INLINE) ===
-
-window.avancarEtapa = async function(id) {
-    try {
-        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "PUT" });
-        if (!resposta.ok) throw new Error("A requisição falhou no servidor.");
-        carregarProcessos();
-    } catch (erro) {
-        alert("Não foi possível avançar a etapa.");
-        console.error(erro);
-    }
-};
-
-window.excluirProcesso = async function(id) {
-    if (!confirm("Tem certeza de que deseja apagar permanentemente esta ordem?")) return;
-    try {
-        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "DELETE" });
-        if (!resposta.ok) throw new Error("Erro interno ao deletar.");
-        carregarProcessos();
-    } catch (erro) {
-        alert("Erro ao excluir o processo.");
-        console.error(erro);
-    }
-};
-
-window.editarProcesso = async function(id, statusAtual) {
-    const novoStatus = prompt(`Digite o novo status descritivo para a ordem #${id}:`, statusAtual);
-    if (!novoStatus || novoStatus.trim() === statusAtual) return;
-
-    try {
-        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}/editar`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: novoStatus.trim() })
-        });
-        if (!resposta.ok) throw new Error("O servidor rejeitou as alterações.");
-        carregarProcessos();
-    } catch (erro) {
-        alert("Falha ao salvar as alterações.");
-        console.error(erro);
-    }
-};
-
-// Inicialização automática ao montar a janela
-carregarProcessos();
+                if (nivelLocal === "admin") {
+                    boto
