@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administração - DenimTrack</title>
-    <link rel="stylesheet" href="style.css?v=2">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - DenimTrack</title>
     
-    <script src="auth.js"></script> 
-    
-    <link rel="stylesheet" href="style.css">
+    <script src="auth.js?v=4"></script> 
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -25,7 +20,7 @@
                  <li onclick="window.location.href='dashboard.html'">Dashboard</li>
                  <li id="menuProcessos" onclick="window.location.href='processos.html'">Processos</li>
                  <li onclick="window.location.href='admin.html'" style="background: #1e293b;">Administração</li>
-                 <li onclick="logout()">Sair</li>
+                 <li onclick="fazerLogout()">Sair</li>
             </ul>
         </aside>
 
@@ -66,11 +61,11 @@
         </main>
     </div>
 
-    <script src="admin.js"></script>
+    <script src="admin.js?v=4"></script>
     <script>
-        function logout() {
+        function fazerLogout() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.replace("login.html");
         }
     </script>
 </body>
