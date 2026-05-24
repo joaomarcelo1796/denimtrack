@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - DenimTrack</title>
-    <link rel="stylesheet" href="style.css?v=2">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - DenimTrack</title>
     
-    <script src="auth.js"></script> 
+    <script src="auth.js?v=3"></script> 
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -33,7 +29,7 @@
                      Administração
                  </li>
 
-                 <li onclick="logout()">
+                 <li onclick="fazerLogout()">
                      Sair
                  </li>
             </ul>
@@ -66,8 +62,7 @@
             <div class="processos">
                 <h2>Últimas Atualizações</h2>
                 <table>
-                    <thead>
-                        </thead>
+                    <thead></thead>
                     <tbody id="tabelaProcessos">
                         </tbody>
                 </table>
@@ -75,13 +70,12 @@
         </main>
     </div>
 
-    <script src="dashboard.js"></script>
+    <script src="dashboard.js?v=3"></script>
 
     <script>
-        // Função de Sair (Limpa os dados de login)
-        function logout() {
-            localStorage.clear();
-            window.location.href = "login.html";
+        function fazerLogout() {
+            localStorage.clear(); // Limpa a memória
+            window.location.replace("login.html"); // Usa replace para impedir o botão "voltar" do navegador
         }
     </script>
 </body>

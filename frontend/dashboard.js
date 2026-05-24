@@ -1,25 +1,29 @@
+// === VERIFICAÇÃO DE SEGURANÇA E SESSÃO ===
 const token = localStorage.getItem("token");
-
 if (!token) {
-    window.location.href = "login.html";
+    window.location.replace("login.html");
 }
+
+// 1. Pega os dados do usuário, limpando espaços invisíveis e forçando minúsculo
+const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
+const nomeUsuario = localStorage.getItem("nome") ? localStorage.getItem("nome").trim().toLowerCase() : "";
+
+// 2. O "Espião" para termos 100% de certeza no Console (F12)
+console.log(`👤 Usuário logado: ${nomeUsuario} | 🔑 Nível de Acesso: [${nivelUsuario}]`);
 
 async function carregarProcessos() {
     try {
         const resposta = await fetch("https://denimtrack.com.br/api/processos");
         let processos = await resposta.json();
 
-        const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
-        const nomeUsuario = localStorage.getItem("nome") ? localStorage.getItem("nome").trim().toLowerCase() : "";
-
-        // === 1. FILTRO SELETIVO DE PRIVACIDADE PARA CLIENTE ===
+        // === FILTRO SELETIVO DE PRIVACIDADE PARA CLIENTE ===
         if (nivelUsuario === "cliente") {
             processos = processos.filter(
                 p => p.cliente.trim().toLowerCase() === nomeUsuario
             );
         }
 
-        // === 2. DINÂMICA DE VISIBILIDADE DAS ABAS DA SIDEBAR ===
+        // === DINÂMICA DE VISIBILIDADE DAS ABAS DA SIDEBAR ===
         document.querySelectorAll(".sidebar ul li").forEach(li => {
             const textoItem = li.textContent.trim();
             if (textoItem.includes("Processos") && nivelUsuario === "cliente") {
@@ -27,56 +31,60 @@ async function carregarProcessos() {
             }
         });
 
+        // === CONTROLE DO MENU ADMIN ===
         const menuAdmin = document.getElementById("menuAdmin");
         if (menuAdmin) {
-            menuAdmin.style.display = nivelUsuario === "admin" ? "block" : "none";
+            menuAdmin.style.display = (nivelUsuario === "admin") ? "block" : "none";
         }
 
-        // === 3. PROCESSAMENTO E EXIBIÇÃO DE METRICAS ===
+        // === PROCESSAMENTO E EXIBIÇÃO DE MÉTRICAS ===
         const total = processos.length;
         const concluidos = processos.filter(p => p.status === "Concluído").length;
         const ativos = total - concluidos;
 
-        document.getElementById("total").innerText = total;
-        document.getElementById("concluidos").innerText = concluidos;
-        document.getElementById("ativos").innerText = ativos;
+        // Usa 'if' para evitar erros no console caso esses IDs não existam no HTML
+        if (document.getElementById("total")) document.getElementById("total").innerText = total;
+        if (document.getElementById("concluidos")) document.getElementById("concluidos").innerText = concluidos;
+        if (document.getElementById("ativos")) document.getElementById("ativos").innerText = ativos;
 
-        // === 4. MONITOR DE ALERTAS ===
+        // === MONITOR DE ALERTAS ===
         const listaAlertas = document.getElementById("listaAlertas");
-        listaAlertas.innerHTML = "";
+        if (listaAlertas) {
+            listaAlertas.innerHTML = "";
+            processos.forEach((processo) => {
+                const identificador = processo.chave_servico || `#${processo.id}`;
+                if (processo.etapa_atual === 3) {
+                    listaAlertas.innerHTML += `
+                        <div class="alerta alerta-warning">
+                            ⚠ A ordem de serviço ${identificador} está na última etapa de processamento.
+                        </div>
+                    `;
+                }
+                if (processo.etapa_atual === 4) {
+                    listaAlertas.innerHTML += `
+                        <div class="alerta alerta-success">
+                            ✅ A ordem de serviço ${identificador} foi finalizada e está pronta!
+                        </div>
+                    `;
+                }
+            });
+        }
 
-        processos.forEach((processo) => {
-            const identificador = processo.chave_servico || `#${processo.id}`;
-            if (processo.etapa_atual === 3) {
-                listaAlertas.innerHTML += `
-                    <div class="alerta alerta-warning">
-                        ⚠ A ordem de serviço ${identificador} está na última etapa de processamento.
-                    </div>
-                `;
-            }
-            if (processo.etapa_atual === 4) {
-                listaAlertas.innerHTML += `
-                    <div class="alerta alerta-success">
-                        ✅ A ordem de serviço ${identificador} foi finalizada e está pronta!
-                    </div>
-                `;
-            }
-        });
-
-        // === 5. RENDERIZAÇÃO ADAPTATIVA DA TABELA DE DADOS ===
+        // === RENDERIZAÇÃO ADAPTATIVA DA TABELA DE DADOS ===
         const tabela = document.getElementById("tabelaProcessos");
         const thead = document.querySelector(".processos table thead");
+        
+        if (!tabela || !thead) return; // Se a página não tiver tabela, ele para a função aqui com segurança
+        
         tabela.innerHTML = "";
 
         if (nivelUsuario === "cliente") {
-            // Cabeçalho simplificado em modo leitura para o Cliente
             thead.innerHTML = `
                 <tr>
                     <th style="text-align: left; padding-left: 15px;">Acompanhamento de Ordens de Serviço</th>
                 </tr>
             `;
         } else {
-            // Cabeçalho detalhado operacional para Equipe Interna
             thead.innerHTML = `
                 <tr>
                     <th>Cliente</th>
@@ -94,7 +102,6 @@ async function carregarProcessos() {
             const itensString = processo.produtos || "Nenhum detalhe técnico anexado.";
 
             if (nivelUsuario === "cliente") {
-                // Formato customizado do Cliente: Serviço X | Itens | Status - XX%
                 tabela.innerHTML += `
                     <tr>
                         <td style="text-align: left; padding: 15px; line-height: 1.8;">
@@ -108,17 +115,18 @@ async function carregarProcessos() {
                     </tr>
                 `;
             } else {
-                // Layout com colunas expandidas e botões de ação para Admin/Funcionário
+                // LÓGICA DE BOTÕES: ADMIN VS FUNCIONÁRIO
                 let botoesAcao = "";
+                
                 if (nivelUsuario === "admin") {
                     botoesAcao = `
-                        <button onclick="avancarEtapa(${processo.id})" style="margin-right: 5px;">Avançar</button>
-                        <button onclick="editarProcesso(${processo.id}, '${processo.status}')" style="background-color: #f59e0b; margin-right: 5px;">Editar</button>
-                        <button onclick="excluirProcesso(${processo.id})" style="background-color: #ef4444;">Excluir</button>
+                        <button onclick="avancarEtapa(${processo.id})" style="margin-right: 5px; cursor: pointer;">Avançar</button>
+                        <button onclick="editarProcesso(${processo.id}, '${processo.status}')" style="background-color: #f59e0b; margin-right: 5px; cursor: pointer;">Editar</button>
+                        <button onclick="excluirProcesso(${processo.id})" style="background-color: #ef4444; cursor: pointer;">Excluir</button>
                     `;
-                } else if (nivelUsuario === "funcionario") {
+                } else {
                     botoesAcao = `
-                        <button onclick="avancarEtapa(${processo.id})">Avançar Etapa</button>
+                        <button onclick="avancarEtapa(${processo.id})" style="cursor: pointer;">Avançar Etapa</button>
                     `;
                 }
 
@@ -144,8 +152,9 @@ async function carregarProcessos() {
     }
 }
 
-// === 6. OPERAÇÃO: AVANÇAR ETAPA (+25%) ===
-async function avancarEtapa(id) {
+// === OPERAÇÕES LIGADAS AO OBJETO WINDOW (EVITA BUGS DE RENDERIZAÇÃO INLINE) ===
+
+window.avancarEtapa = async function(id) {
     try {
         const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "PUT" });
         if (!resposta.ok) throw new Error("A requisição falhou no servidor.");
@@ -154,10 +163,9 @@ async function avancarEtapa(id) {
         alert("Não foi possível avançar a etapa.");
         console.error(erro);
     }
-}
+};
 
-// === 7. OPERAÇÃO: EXCLUIR REGISTRO ===
-async function excluirProcesso(id) {
+window.excluirProcesso = async function(id) {
     if (!confirm("Tem certeza de que deseja apagar permanentemente esta ordem?")) return;
     try {
         const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "DELETE" });
@@ -167,10 +175,9 @@ async function excluirProcesso(id) {
         alert("Erro ao excluir o processo.");
         console.error(erro);
     }
-}
+};
 
-// === 8. OPERAÇÃO: EDITAR TEXTO DE STATUS (ADMIN) ===
-async function editarProcesso(id, statusAtual) {
+window.editarProcesso = async function(id, statusAtual) {
     const novoStatus = prompt(`Digite o novo status descritivo para a ordem #${id}:`, statusAtual);
     if (!novoStatus || novoStatus.trim() === statusAtual) return;
 
@@ -186,7 +193,7 @@ async function editarProcesso(id, statusAtual) {
         alert("Falha ao salvar as alterações.");
         console.error(erro);
     }
-}
+};
 
 // Inicialização automática ao montar a janela
 carregarProcessos();
