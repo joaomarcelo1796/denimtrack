@@ -1,5 +1,5 @@
 const token = localStorage.getItem("token");
-const nivelUsuario = localStorage.getItem("nivel");
+const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
 
 // Trava de segurança absoluta: Se não for admin, volta pro Dashboard
 if (!token || nivelUsuario !== "admin") {

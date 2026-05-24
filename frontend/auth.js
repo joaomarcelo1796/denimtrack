@@ -1,7 +1,7 @@
 // === auth.js | CONTROLE DE ACESSO CENTRALIZADO ===
 
 const token = localStorage.getItem("token");
-const nivel = localStorage.getItem("nivel");
+const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
 const nomeUsuario = localStorage.getItem("nome");
 
 // Descobre o nome da página atual (ex: "/login.html" ou "/dashboard.html")
