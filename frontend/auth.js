@@ -1,32 +1,30 @@
 // === auth.js | CONTROLE DE ACESSO CENTRALIZADO ===
 
-// 1. Resgata os dados da sessão imediatamente
 const token = localStorage.getItem("token");
 const nivel = localStorage.getItem("nivel");
 const nomeUsuario = localStorage.getItem("nome");
 
-// 2. Trava Principal: Se não houver token, bloqueia e expulsa ANTES da página carregar
-if (!token) {
-    console.warn("Acesso negado: Tentativa de acesso sem autenticação.");
-    // O 'replace' substitui o histórico, impedindo que o botão "voltar" do navegador funcione
-    window.location.replace("login.html"); 
+// Descobre o nome da página atual (ex: "/login.html" ou "/dashboard.html")
+const paginaAtual = window.location.pathname;
+
+// 1. TRAVA DE SEGURANÇA: Se NÃO tem token e NÃO está na página de login, joga pro login
+if (!token && !paginaAtual.includes("login.html")) {
+    console.warn("Acesso negado: Redirecionando para o login.");
+    window.location.replace("login.html");
+}
+
+// 2. ATALHO INTELIGENTE: Se TEM token e o cara tentar abrir o login de novo, pula direto pro dashboard
+if (token && paginaAtual.includes("login.html")) {
+    window.location.replace("dashboard.html");
 }
 
 // 3. Função Global de Logout
 window.fazerLogout = function() {
-    // Limpa os dados de acesso
-    localStorage.removeItem("token");
-    localStorage.removeItem("nivel");
-    localStorage.removeItem("nome");
-    
-    // Opcional: localStorage.clear(); // Use se quiser apagar TUDO do navegador
-
-    // Redireciona para o login com segurança
+    localStorage.clear(); // Limpa tudo
     window.location.replace("login.html");
 };
 
-// 4. Injeção Automática de Interface (Bônus de UX)
-// Quando a página terminar de carregar, se existir um elemento com id "nomeUsuarioDisplay", ele preenche com o nome.
+// 4. Injeção Automática de Nome de Usuário (Bônus)
 document.addEventListener("DOMContentLoaded", () => {
     const displayElement = document.getElementById("nomeUsuarioDisplay");
     if (displayElement && nomeUsuario) {
