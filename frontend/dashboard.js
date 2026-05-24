@@ -1,8 +1,3 @@
-// === VERIFICAÇÃO DE SEGURANÇA E SESSÃO ===
-const token = localStorage.getItem("token");
-if (!token) {
-    window.location.replace("login.html");
-}
 
 // 1. Pega os dados do usuário, limpando espaços invisíveis e forçando minúsculo
 const nivelUsuario = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
