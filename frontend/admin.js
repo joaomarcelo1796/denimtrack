@@ -50,5 +50,12 @@ async function carregarPainelAdmin() {
         console.error("Erro ao carregar os dados do Admin:", erro);
     }
 }
+// === VERIFICAÇÃO DE NÍVEL (Exclusivo para páginas Admin) ===
+// Como o auth.js já rodou e garantiu que a pessoa está logada, aqui só testamos o cargo.
 
+if (nivel !== "admin") {
+    alert("⛔ Acesso Restrito: Apenas administradores têm permissão para acessar esta área.");
+    // Como ele está logado mas não é admin, jogamos ele de volta para a tela de operações normais
+    window.location.replace("dashboard.html"); 
+}
 carregarPainelAdmin();
