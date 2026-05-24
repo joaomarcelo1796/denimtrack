@@ -2,7 +2,6 @@
 
 async function carregarProcessos() {
     try {
-        // As variáveis vieram para DENTRO da função. Zero chance de colisão!
         const nivelLocal = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
         const nomeLocal = localStorage.getItem("nome") ? localStorage.getItem("nome").trim().toLowerCase() : "";
         
@@ -112,4 +111,80 @@ async function carregarProcessos() {
                 let botoesAcao = "";
                 
                 if (nivelLocal === "admin") {
-                    boto
+                    botoesAcao = `
+                        <button onclick="avancarEtapa(${processo.id})" style="margin-right: 5px; cursor: pointer;">Avançar</button>
+                        <button onclick="editarProcesso(${processo.id}, '${processo.status}')" style="background-color: #f59e0b; margin-right: 5px; cursor: pointer;">Editar</button>
+                        <button onclick="excluirProcesso(${processo.id})" style="background-color: #ef4444; cursor: pointer;">Excluir</button>
+                    `;
+                } else {
+                    botoesAcao = `
+                        <button onclick="avancarEtapa(${processo.id})" style="cursor: pointer;">Avançar Etapa</button>
+                    `;
+                }
+
+                tabela.innerHTML += `
+                    <tr>
+                        <td><strong>${processo.cliente}</strong></td>
+                        <td><span style="color: #475569; font-weight: 700;">${codServico}</span></td>
+                        <td><span style="font-size: 13px; color: #64748b; font-style: italic;">${itensString}</span></td>
+                        <td>
+                            <div class="barra-container">
+                                <div class="barra-progresso" style="width: ${progressoPorcentagem}%"></div>
+                            </div>
+                            <span style="font-size: 12px; font-weight: bold;">${processo.status} (${progressoPorcentagem}%)</span>
+                        </td>
+                        <td>${botoesAcao}</td>
+                    </tr>
+                `;
+            }
+        });
+
+    } catch (erro) {
+        console.error("Erro crítico na carga de dados:", erro);
+    }
+}
+
+// === OPERAÇÕES LIGADAS AO OBJETO WINDOW ===
+window.avancarEtapa = async function(id) {
+    try {
+        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "PUT" });
+        if (!resposta.ok) throw new Error("A requisição falhou no servidor.");
+        carregarProcessos();
+    } catch (erro) {
+        alert("Não foi possível avançar a etapa.");
+        console.error(erro);
+    }
+};
+
+window.excluirProcesso = async function(id) {
+    if (!confirm("Tem certeza de que deseja apagar permanentemente esta ordem?")) return;
+    try {
+        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}`, { method: "DELETE" });
+        if (!resposta.ok) throw new Error("Erro interno ao deletar.");
+        carregarProcessos();
+    } catch (erro) {
+        alert("Erro ao excluir o processo.");
+        console.error(erro);
+    }
+};
+
+window.editarProcesso = async function(id, statusAtual) {
+    const novoStatus = prompt(`Digite o novo status descritivo para a ordem #${id}:`, statusAtual);
+    if (!novoStatus || novoStatus.trim() === statusAtual) return;
+
+    try {
+        const resposta = await fetch(`https://denimtrack.com.br/api/processos/${id}/editar`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: novoStatus.trim() })
+        });
+        if (!resposta.ok) throw new Error("O servidor rejeitou as alterações.");
+        carregarProcessos();
+    } catch (erro) {
+        alert("Falha ao salvar as alterações.");
+        console.error(erro);
+    }
+};
+
+// Inicialização automática ao montar a janela
+carregarProcessos();
