@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DenimTrack - Carregando...</title>
+    <script>
+        // Roteador Inteligente: 
+        // Se a pessoa já tem o token (está logada), joga direto pro Dashboard.
+        // Se não tem (é um visitante novo), joga pra tela de Login.
+        if (localStorage.getItem("token")) {
+            window.location.replace("dashboard.html");
+        } else {
+            window.location.replace("login.html");
+        }
+    </script>
+</head>
+<body style="background-color: #f3f4f6;">
+    </body>
+</html>
