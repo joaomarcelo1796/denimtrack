@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Processo - DenimTrack</title>
-    <link rel="stylesheet" href="style.css?v=2">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - DenimTrack</title>
     
-    <script src="auth.js"></script> 
+    <script src="auth.js?v=3"></script> 
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -23,8 +19,10 @@
             <ul>
                  <li onclick="window.location.href='dashboard.html'">Dashboard</li>
                  <li id="menuProcessos" onclick="window.location.href='processos.html'" style="background: #1e293b;">Processos</li>
+                 
                  <li id="menuAdmin" onclick="window.location.href='admin.html'" style="display: none;">Administração</li>
-                 <li onclick="logout()">Sair</li>
+                 
+                 <li onclick="fazerLogout()">Sair</li>
             </ul>
         </aside>
 
@@ -62,11 +60,21 @@
         </main>
     </div>
 
-    <script src="processos.js"></script>
+    <script src="processos.js?v=3"></script>
+    
     <script>
-        function logout() {
+        // Lógica cravada para garantir que o Admin veja o menu
+        const nivelLocal = localStorage.getItem("nivel") ? localStorage.getItem("nivel").trim().toLowerCase() : "";
+        const menuAdmin = document.getElementById("menuAdmin");
+        
+        if (menuAdmin && nivelLocal === "admin") {
+            menuAdmin.style.display = "block";
+        }
+
+        // Função de Logout Segura
+        function fazerLogout() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.replace("login.html");
         }
     </script>
 </body>
